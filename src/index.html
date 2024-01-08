@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tauri App</title>
+    <script type="module" src="/main.js" defer></script>
+    <style>
+      .logo.vanilla:hover {
+        filter: drop-shadow(0 0 2em #ffe21c);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Sextant Inventory</h1>
+
+      <form class="row" id="input-form">
+        <input id="input-text" value="input.txt" />
+        <button type="submit">Submit</button>
+      </form>
+
+      <p id="inventory"></p>
+    </div>
+    <div class="container">
+      <h1>Change Stock</h1>
+
+      <form class="row" id="stock-change-form">
+        <input
+          id="stock-change-name"
+          placeholder="Enter stock change name..."
+        />
+        <input id="stock-change-amt" placeholder="Enter stock change amt..." />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>
