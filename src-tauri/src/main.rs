@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use serde::{Deserialize, Serialize};
+use serde::{ser, Deserialize, Serialize};
 use std::fs;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -15,11 +15,7 @@ fn main() {
     // update_input(&mut inventory, "Strongbox Enraged", -3);
     // println!("{:?}", inventory[0]);
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![
-            greet,
-            get_inventory,
-            print_serialised_inv
-        ])
+        .invoke_handler(tauri::generate_handler![greet, get_inventory, update_stock])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -32,7 +28,7 @@ struct Sextant {
 }
 
 fn deserialise_inv(serialised_inv: &str) -> Vec<Sextant> {
-    let inv_items: Vec<&str> = serialised_inv.split("-").collect();
+    let inv_items: Vec<&str> = serialised_inv.split("|").collect();
     let mut inventory: Vec<Sextant> = Vec::new();
 
     for item in inv_items {
@@ -45,17 +41,19 @@ fn deserialise_inv(serialised_inv: &str) -> Vec<Sextant> {
 
 #[tauri::command]
 fn get_inventory(infile: &str) -> String {
-    let inventory = parse_input(infile);
-    let mut serialized_inventory = Vec::new();
+    let inventory: Vec<Sextant> = parse_input(infile);
+    serialise_inv(inventory)
+}
 
+fn serialise_inv(inventory: Vec<Sextant>) -> String {
+    let mut serialized_inventory = Vec::new();
     for sextant in inventory {
         serialized_inventory.push(serde_json::to_string(&sextant).unwrap())
     }
 
-    serialized_inventory.join("-")
+    serialized_inventory.join("|")
 }
 
-#[tauri::command]
 fn print_serialised_inv(serialised_inv: String) {
     let inventory = deserialise_inv(&serialised_inv);
     for sextant in inventory {
@@ -63,10 +61,19 @@ fn print_serialised_inv(serialised_inv: String) {
     }
 }
 
-fn update_input(inventory: &mut Vec<Sextant>, item_name: &str, stock_change: i32) {
+#[tauri::command]
+fn update_stock(serialised_inv: String, item_name: &str, stock_change: &str) -> String {
+    let stock_change_int = match stock_change.parse::<i32>() {
+        Ok(num) => num,
+        Err(err) => return serialised_inv,
+    };
+
+    let mut inventory = deserialise_inv(&serialised_inv);
     if let Some(item) = inventory.iter_mut().find(|item| item.name == item_name) {
-        item.stock += stock_change;
+        item.stock += stock_change_int;
     }
+
+    serialise_inv(inventory)
 }
 
 fn parse_input(infile: &str) -> Vec<Sextant> {

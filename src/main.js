@@ -15,15 +15,22 @@ let stockChangeNameEl;
 let stockChangeAmtEl;
 
 async function get_inventory() {
-  inventoryTextEl.textContent = await invoke("get_inventory", {
-    infile: inputTextEl.value,
-  });
+  display_inv(await invoke("get_inventory", { infile: inputTextEl.value }));
 }
 
-async function print_serialised_inv() {
-  await invoke("print_serialised_inv", {
-    serialisedInv: inventoryTextEl.textContent,
-  });
+function display_inv(inventoryString) {
+  inventoryTextEl.textContent = inventoryString;
+}
+
+async function update_stock() {
+  console.log("updating stock");
+  display_inv(
+    await invoke("update_stock", {
+      serialisedInv: inventoryTextEl.textContent,
+      itemName: stockChangeNameEl.value,
+      stockChange: stockChangeAmtEl.value,
+    })
+  );
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -39,6 +46,6 @@ window.addEventListener("DOMContentLoaded", () => {
     .querySelector("#stock-change-form")
     .addEventListener("submit", (e) => {
       e.preventDefault();
-      print_serialised_inv();
+      update_stock();
     });
 });
