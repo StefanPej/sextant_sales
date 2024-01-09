@@ -3,83 +3,36 @@
 
 use serde::{ser, Deserialize, Serialize};
 use std::fs;
-
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
+use std::sync::Mutex;
+use tauri::State;
 
 fn main() {
-    let mut inventory = parse_input("input.txt");
-    // update_input(&mut inventory, "Strongbox Enraged", -3);
-    // println!("{:?}", inventory[0]);
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, get_inventory, update_stock])
+        .manage(Mutex::new(Vec::<Sextant>::new()))
+        .invoke_handler(tauri::generate_handler![get_inv, update_stock])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct Sextant {
     name: String,
     stock: i32,
     price: f32,
 }
 
-fn deserialise_inv(serialised_inv: &str) -> Vec<Sextant> {
-    let inv_items: Vec<&str> = serialised_inv.split("|").collect();
-    let mut inventory: Vec<Sextant> = Vec::new();
-
-    for item in inv_items {
-        let temp_sextant: Sextant = serde_json::from_str(item).unwrap();
-        inventory.push(temp_sextant)
-    }
-
-    inventory
-}
-
 #[tauri::command]
-fn get_inventory(infile: &str) -> String {
-    let inventory: Vec<Sextant> = parse_input(infile);
-    serialise_inv(inventory)
-}
-
-fn serialise_inv(inventory: Vec<Sextant>) -> String {
-    let mut serialized_inventory = Vec::new();
-    for sextant in inventory {
-        serialized_inventory.push(serde_json::to_string(&sextant).unwrap())
-    }
-
-    serialized_inventory.join("|")
-}
-
-fn print_serialised_inv(serialised_inv: String) {
-    let inventory = deserialise_inv(&serialised_inv);
-    for sextant in inventory {
-        println!("{:?}", sextant)
-    }
-}
-
-#[tauri::command]
-fn update_stock(serialised_inv: String, item_name: &str, stock_change: &str) -> String {
-    let stock_change_int = match stock_change.parse::<i32>() {
-        Ok(num) => num,
-        Err(err) => return serialised_inv,
-    };
-
-    let mut inventory = deserialise_inv(&serialised_inv);
-    if let Some(item) = inventory.iter_mut().find(|item| item.name == item_name) {
-        item.stock += stock_change_int;
-    }
-
-    serialise_inv(inventory)
-}
-
-fn parse_input(infile: &str) -> Vec<Sextant> {
+fn get_inv(infile: &str, inventory_state: State<'_, Mutex<Vec<Sextant>>>) -> Vec<String> {
     let contents = fs::read_to_string(infile).expect("Can't read infile.");
-    let mut inventory: Vec<Sextant> = Vec::new();
+    let mut inventory = inventory_state.lock().unwrap();
 
+    // Remove everything in inventory
+    // TODO: surely there has to be a way to just reinitialise an empty vector?
+    for _i in 0..inventory.clone().len() {
+        inventory.remove(0);
+    }
+
+    // Add everything to inventory
     for line in contents.lines() {
         if line.chars().next().unwrap().is_alphabetic() {
             continue;
@@ -101,6 +54,52 @@ fn parse_input(infile: &str) -> Vec<Sextant> {
 
         inventory.push(temp_sextant)
     }
+    serialise_inv(inventory.clone())
+}
+
+#[tauri::command]
+fn update_stock(
+    inventory_state: State<'_, Mutex<Vec<Sextant>>>,
+    item_name: &str,
+    stock_change: &str,
+) -> Vec<String> {
+    let mut inventory = inventory_state.lock().unwrap();
+    let stock_change_int = match stock_change.parse::<i32>() {
+        Ok(num) => num,
+        Err(err) => return serialise_inv(inventory.clone()),
+    };
+
+    if let Some(item) = inventory.iter_mut().find(|item| item.name == item_name) {
+        item.stock += stock_change_int;
+    }
+
+    serialise_inv(inventory.clone())
+}
+
+fn deserialise_inv(serialised_inv: &str) -> Vec<Sextant> {
+    let inv_items: Vec<&str> = serialised_inv.split("|").collect();
+    let mut inventory: Vec<Sextant> = Vec::new();
+
+    for item in inv_items {
+        let temp_sextant: Sextant = serde_json::from_str(item).unwrap();
+        inventory.push(temp_sextant)
+    }
 
     inventory
+}
+
+fn serialise_inv(inventory: Vec<Sextant>) -> Vec<String> {
+    let mut serialized_inventory = Vec::new();
+    for sextant in inventory {
+        serialized_inventory.push(serde_json::to_string(&sextant).unwrap())
+    }
+
+    serialized_inventory
+}
+
+fn print_serialised_inv(serialised_inv: String) {
+    let inventory = deserialise_inv(&serialised_inv);
+    for sextant in inventory {
+        println!("{:?}", sextant)
+    }
 }
