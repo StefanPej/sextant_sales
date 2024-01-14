@@ -1,13 +1,4 @@
-//import { invoke } from "@tauri-apps/api/tauri";
 const { invoke } = window.__TAURI__.tauri;
-
-// let greetInputEl;
-// let greetMsgEl;
-
-// async function greet() {
-//   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-//   greetMsgEl.textContent = await invoke("greet", { name: "1234" });
-// }
 
 let inputTextEl;
 let inventoryTextEl;
@@ -103,6 +94,7 @@ function deselectAll() {
     sextantDiv.style.backgroundColor = "rgba(0, 0, 0, 0.466)";
   });
 
+  document.getElementById("stock-change-amt").value = "";
   selectedSextants = [];
 }
 
