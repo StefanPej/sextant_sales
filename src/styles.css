@@ -14,6 +14,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
+#stock-change-amt {
+  width: 100px;
+}
+
 .form-container {
   margin: 0;
   padding-top: 10px;

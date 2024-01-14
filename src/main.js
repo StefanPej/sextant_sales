@@ -97,20 +97,31 @@ function selectSextant(sextantName) {
   console.log(selectedSextants);
 }
 
+function deselectAll() {
+  selectedSextants.forEach((sextant) => {
+    var sextantDiv = document.getElementById(sextant);
+    sextantDiv.style.backgroundColor = "rgba(0, 0, 0, 0.466)";
+  });
+
+  selectedSextants = [];
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   inputTextEl = document.querySelector("#input-text");
   inventoryTextEl = document.querySelector("#inventory");
   stockChangeNameEl = document.querySelector("#stock-change-name");
   stockChangeAmtEl = document.querySelector("#stock-change-amt");
-  document.querySelector("#input-form").addEventListener("submit", (e) => {
+  document.querySelector("#load-txt-button").addEventListener("click", (e) => {
     e.preventDefault();
     getInventoryFromTxt();
   });
-  document
-    .querySelector("#stock-change-form")
-    .addEventListener("submit", (e) => {
-      e.preventDefault();
-      updateStock();
-    });
+  document.querySelector("#stock-change-btn").addEventListener("click", (e) => {
+    e.preventDefault();
+    updateStock();
+  });
+  document.querySelector("#deselect-btn").addEventListener("click", (e) => {
+    e.preventDefault();
+    deselectAll();
+  });
   getInventoryFromTxt();
 });
