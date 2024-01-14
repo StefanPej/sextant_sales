@@ -60,17 +60,21 @@ fn get_inv(infile: &str, inventory_state: State<'_, Mutex<Vec<Sextant>>>) -> Vec
 #[tauri::command]
 fn update_stock(
     inventory_state: State<'_, Mutex<Vec<Sextant>>>,
-    item_name: &str,
+    item_names: Vec<&str>,
     stock_change: &str,
 ) -> Vec<String> {
     let mut inventory = inventory_state.lock().unwrap();
-    let stock_change_int = match stock_change.parse::<i32>() {
+    let mut stock_change_int = match stock_change.parse::<i32>() {
         Ok(num) => num,
         Err(err) => return serialise_inv(inventory.clone()),
     };
 
-    if let Some(item) = inventory.iter_mut().find(|item| item.name == item_name) {
-        item.stock += stock_change_int;
+    stock_change_int = stock_change_int * -1;
+
+    for item_name in item_names {
+        if let Some(item) = inventory.iter_mut().find(|item| item.name == item_name) {
+            item.stock += stock_change_int;
+        }
     }
 
     serialise_inv(inventory.clone())

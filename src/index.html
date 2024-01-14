@@ -14,27 +14,28 @@
   </head>
 
   <body>
-    <div class="container">
-      <h1>Sextant Inventory</h1>
+    <div class="form-container">
 
-      <form class="row" id="input-form">
-        <input id="input-text" value="input.txt" />
-        <button type="submit">Submit</button>
+      <div class="mini-form-container">
+        <h1>Sextant Inventory</h1>
+        <form class="row" id="input-form">
+          <input id="input-text" value="input.txt" />
+          <button type="submit">Load</button>
+        </form>
+      </div>
+      <div class="mini-form-container">
+      <h1>Change Stock</h1>
+      <form class="row" id="stock-change-form">
+        <input id="stock-change-amt" placeholder="Enter stock change amt..." />
+        <button type="submit">Update</button>
       </form>
-
-      <p id="inventory"></p>
+      </div>
     </div>
     <div class="container">
-      <h1>Change Stock</h1>
 
-      <form class="row" id="stock-change-form">
-        <input
-          id="stock-change-name"
-          placeholder="Enter stock change name..."
-        />
-        <input id="stock-change-amt" placeholder="Enter stock change amt..." />
-        <button type="submit">Submit</button>
       </form>
+
+      <div class="sextantContainer" , id="sextantWrapper"></div>
     </div>
   </body>
 </html>

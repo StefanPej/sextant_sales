@@ -14,9 +14,16 @@
   -webkit-text-size-adjust: 100%;
 }
 
-.container {
+.form-container {
   margin: 0;
-  padding-top: 10vh;
+  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.mini-form-container {
+  margin: 3px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -86,6 +93,58 @@ button {
 
 #greet-input {
   margin-right: 5px;
+}
+
+h4 {
+  line-height: 0;
+  margin-top: 1px;
+  padding: 0px;
+  white-space: pre-line;
+}
+
+h3 {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.sextantButton {
+  position: relative;
+  border-color: #ff0000;
+  border-width: 100px;
+  border-radius: 7px;
+  background-color: rgba(0, 0, 0, 0.466);
+  width: 130px;
+  height: 90px;
+  text-align: left;
+  line-height: 1;
+  padding-top: 8px;
+  padding-left: 8px;
+}
+
+.sextantButton:hover {
+  background-color: rgba(0, 0, 0, 0.295);
+}
+
+.sextantContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+img {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+}
+
+.sextantText {
+  height: 20px;
+  position: absolute;
+  bottom: 15px;
 }
 
 @media (prefers-color-scheme: dark) {
