@@ -128,6 +128,7 @@ h3 {
 
 .sextantButton:hover {
   background-color: rgba(0, 0, 0, 0.295);
+  cursor: pointer;
 }
 
 .sextantContainer {
