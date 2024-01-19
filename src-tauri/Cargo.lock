@@ -2386,6 +2386,7 @@ dependencies = [
 name = "sextant_sales"
 version = "0.0.0"
 dependencies = [
+ "glob",
  "serde",
  "serde_json",
  "tauri",

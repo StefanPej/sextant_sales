@@ -39,8 +39,14 @@ function createInventoryButtons(inventoryArray) {
     sextantDiv.classList.add("sextantButton");
     sextantDiv.id = sextantJson.name;
 
+    var img = document.createElement("img");
+    img.classList.add("sextant-icon");
+    img.src = "/assets/" + sextantJson.icon;
+    sextantDiv.append(img);
+
     const sextantName = document.createElement("h3");
     sextantName.textContent = sextantJson.name;
+    sextantName.classList.add("sextant-name");
     sextantDiv.append(sextantName);
 
     const sextantTextDiv = document.createElement("div");
@@ -53,10 +59,6 @@ function createInventoryButtons(inventoryArray) {
     sextantPrice.textContent = sextantJson.price + "c";
     sextantTextDiv.append(sextantPrice);
     sextantDiv.append(sextantTextDiv);
-
-    var img = document.createElement("img");
-    img.src = "assets/dib_think.jpg";
-    sextantDiv.append(img);
 
     sextantDiv.addEventListener("click", function () {
       selectSextant(sextantJson.name);
@@ -83,7 +85,7 @@ function selectSextant(sextantName) {
     sextantDiv.style.backgroundColor = "rgba(0, 0, 0, 0.466)";
   } else {
     selectedSextants.push(sextantName);
-    sextantDiv.style.backgroundColor = "blue";
+    sextantDiv.style.backgroundColor = "rgba(150, 150, 0, 0.3)";
   }
   console.log(selectedSextants);
 }

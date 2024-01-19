@@ -109,6 +109,7 @@ h4 {
 h3 {
   padding-top: 0;
   margin-top: 0;
+  z-index: 2;
 }
 
 .sextantButton {
@@ -138,19 +139,27 @@ h3 {
   justify-content: center;
 }
 
-img {
+.sextant-name {
+  position: relative;
+  z-index: 100;
+}
+
+.sextant-icon {
   width: 65px;
   height: 65px;
   border-radius: 50%;
   position: absolute;
   bottom: 8px;
   right: 8px;
+  z-index: 1;
+  opacity: 80%;
 }
 
 .sextantText {
   height: 20px;
   position: absolute;
   bottom: 15px;
+  z-index: 2;
 }
 
 @media (prefers-color-scheme: dark) {
