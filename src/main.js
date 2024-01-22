@@ -53,6 +53,7 @@ function createInventoryButtons(inventoryArray) {
     sextantTextDiv.classList.add("sextantText");
     const sextantStock = document.createElement("h4");
     sextantStock.id = "stock";
+    sextantStock.classList.add("stock-amt");
     sextantStock.textContent = sextantJson.stock;
     sextantTextDiv.append(sextantStock);
     const sextantPrice = document.createElement("h4");

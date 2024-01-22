@@ -112,6 +112,10 @@ h3 {
   z-index: 2;
 }
 
+.stock-amt {
+  font-size: 110%;
+}
+
 .sextantButton {
   position: relative;
   border-color: #ff0000;
@@ -158,7 +162,7 @@ h3 {
 .sextantText {
   height: 20px;
   position: absolute;
-  bottom: 15px;
+  bottom: 18px;
   z-index: 2;
 }
 
