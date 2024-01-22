@@ -10,7 +10,6 @@ use std::sync::Mutex;
 use tauri::State;
 
 fn main() {
-    make_icon_hashmap();
     tauri::Builder::default()
         .manage(Mutex::new(Vec::<Sextant>::new()))
         .invoke_handler(tauri::generate_handler![get_inv, update_stock])
@@ -51,8 +50,11 @@ fn get_inv(infile: &str, inventory_state: State<'_, Mutex<Vec<Sextant>>>) -> Vec
         let len_parts = parts.len();
 
         let sextant_name = parts[1..len_parts - 1].join(" ");
-        //println!("{}", sextant_name);
-        let sextant_icon = get_icon_filename(&name_maps[&sextant_name]);
+        let sextant_icon = get_icon_filename(
+            &name_maps
+                .get(&sextant_name)
+                .unwrap_or(&String::from("default")),
+        );
 
         let temp_sextant = Sextant {
             name: parts[1..len_parts - 1].join(" "),
@@ -117,7 +119,8 @@ fn get_icon_filename(icon_name: &str) -> String {
         //println!("{}", ret_val);
         return ret_val;
     }
-    "dib_think.png".to_owned()
+    // Default val
+    "dib_think.jpg".to_owned()
 }
 
 fn make_icon_hashmap() -> HashMap<String, String> {
